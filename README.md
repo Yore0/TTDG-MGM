@@ -97,6 +97,7 @@ If you use this work in your research or wish to refer to the results published 
 We gratefully acknowledge the following open-source projects that inspired or contributed to our implementation:
 - [ThinkMatch](https://github.com/Thinklab-SJTU/ThinkMatch)
 - [VPTTA](https://github.com/Chen-Ziyang/VPTTA)
+- [ToMo-UDA](https://github.com/xmed-lab/ToMo-UDA)
 - [Detectron2](https://github.com/facebookresearch/detectron2)
 
 
