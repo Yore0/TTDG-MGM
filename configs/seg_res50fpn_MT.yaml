@@ -1,0 +1,48 @@
+_BASE_: "./Base-RCNN-FPN.yaml"
+OUTPUT_DIR: "output/fs_Drishti_GS_U"
+MODEL:
+  WEIGHTS: output/fs_Drishti_GS_U/model_0004999.pth #"detectron2://ImageNetPretrained/MSRA/R-50.pkl"
+  META_ARCHITECTURE: "DAobjTwoStagePseudoLabGeneralizedRCNN"
+  MASK_ON: True
+  RESNETS:
+    DEPTH: 50
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+  FPN:
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+  PROPOSAL_GENERATOR:
+    NAME: "PseudoLabRPN"
+  ROI_HEADS:
+    NAME: "StandardROIHeadsPseudoLab"
+    NUM_CLASSES: 2
+    IN_FEATURES: ["p2", "p3", "p4", "p5"]
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_FC: 2
+    POOLER_RESOLUTION: 7
+DATASETS:
+  CROSS_DATASET: True
+  TRAIN_LABEL: ("Drishti_GS_train",) # "Drishti_GS_train", "ORIGA_train", "REFUGE_train", "RIM_ONE_r3_train"
+  TRAIN_UNLABEL: ("Drishti_GS_train",)
+  TEST: ("Drishti_GS_test",)
+SOLVER:
+  LR_SCHEDULER_NAME: "WarmupTwoStageMultiStepLR"
+  STEPS: (60000, 80000, 90000, 360000)
+  FACTOR_LIST: (1, 1, 1, 1, 1)
+  MAX_ITER: 10000
+  IMG_PER_BATCH_LABEL: 4
+  IMG_PER_BATCH_UNLABEL: 4
+  BASE_LR: 0.0025 #0.0025  0.01
+  CHECKPOINT_PERIOD: 1000
+SEMISUPNET:
+  TTT: True
+  Trainer: "ateacher"
+  BBOX_THRESHOLD: 0.8
+  TEACHER_UPDATE_ITER: 1
+  EMA_KEEP_RATE: 0.9996
+  UNSUP_LOSS_WEIGHT: 1.0
+  SUP_LOSS_WEIGHT: 1.0
+  DIS_TYPE: "p2" #["concate","p2","multi"] ## choose which layer to grad_reverse
+TEST:
+  EVAL_PERIOD: 1000
+INPUT:
+  FORMAT: "RGB"

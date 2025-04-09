@@ -1,0 +1,38 @@
+_BASE_: "./Base-RCNN-FPN.yaml"
+OUTPUT_DIR: "output/test"  # Lvxg
+MODEL:
+  WEIGHTS: "output/fs_Drishti_GS_U/model_0004999.pth"
+  META_ARCHITECTURE: "DAobjTwoStagePseudoLabGeneralizedRCNN"
+  MASK_ON: True
+  RESNETS:
+    DEPTH: 50
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+  FPN:
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+  PROPOSAL_GENERATOR:
+    NAME: "PseudoLabRPN"
+  ROI_HEADS:
+    NAME: "StandardROIHeadsPseudoLab"
+    NUM_CLASSES: 2
+    IN_FEATURES: ["p2", "p3", "p4", "p5"]
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_FC: 2
+    POOLER_RESOLUTION: 7
+SOLVER:
+  MAX_ITER: 30000
+DATASETS:
+  CROSS_DATASET: True
+  TEST: ("Drishti_GS_test",) #Lvxg Drishti_GS_test ORIGA_test REFUGE_test RIM_ONE_r3_test
+SEMISUPNET:
+  TTT: True
+  Trainer: "ateacher"
+  BBOX_THRESHOLD: 0.8
+  BURN_UP_STEP: 20000 #10000 # when iter > BURN_UP_STEP, start teacher model learning, else, supervised train students model only.
+  DIS_TYPE: "p2" #["concate","p2","multi"] ## choose which layer to grad_reverse
+TEST:
+  EVAL_STU: True #Lvxg
+  DRAW: False
+  DICE: True
+INPUT:
+  FORMAT: "RGB"

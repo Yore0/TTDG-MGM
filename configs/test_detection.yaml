@@ -1,0 +1,60 @@
+_BASE_: "./Base-RCNN-FPN.yaml"
+OUTPUT_DIR: "visual/visual_head/tomo" #"output/test"  # Lvxg
+MODEL:
+  DEVICE: "cuda"
+  WEIGHTS: "output/output_qiunao/tomo_res50_2_1/model_0016999.pth" # Lvxg
+  META_ARCHITECTURE: "DAobjTwoStagePseudoLabGeneralizedRCNN"
+  BACKBONE:
+    NAME: "build_resnet_fpn_backbone"
+  MASK_ON: False
+  RESNETS:
+    DEPTH: 50
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+  FPN:
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+  PROPOSAL_GENERATOR:
+    NAME: "PseudoLabRPN"
+  RPN:
+    IN_FEATURES: ["p2", "p3", "p4", "p5"]
+  ROI_HEADS:
+    NAME: "StandardROIHeadsPseudoLab"
+    LOSS: "CrossEntropy" # variant: CrossEntropy FocalLoss
+    NUM_CLASSES: 7 ###Lvxg
+    IN_FEATURES: ["p2", "p3", "p4", "p5"]
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_FC: 2
+    POOLER_RESOLUTION: 7
+  PIXEL_MEAN: [123.675, 116.280, 103.530]
+  PIXEL_STD: [58.395, 57.120, 57.375]
+SOLVER:
+  LR_SCHEDULER_NAME: "WarmupTwoStageMultiStepLR"
+  STEPS: (60000, 80000, 90000, 360000)
+  FACTOR_LIST: (1, 1, 1, 1, 1)
+  MAX_ITER: 30000
+  IMG_PER_BATCH_LABEL: 2
+  IMG_PER_BATCH_UNLABEL: 2
+  BASE_LR: 0.01
+  CHECKPOINT_PERIOD: 1000
+DATALOADER:
+  SUP_PERCENT: 100.0
+DATASETS:
+  CROSS_DATASET: True
+  # TRAIN_LABEL: ("fetus_spine_ge_train",)
+  # TRAIN_UNLABEL: ("fetus_spine_ph_train",)
+  TEST: ("fetus_head_c1_test",) #Lvxg mmwhs_ct_val fetus_4c_hos2_test fetus_abdomen_sa_test 3vt_B_test CHAOS_MR_test Synapse_CT_test
+SEMISUPNET:
+  Trainer: "ateacher"
+  BBOX_THRESHOLD: 0.8
+  TEACHER_UPDATE_ITER: 1
+  BURN_UP_STEP: 20000 #10000 # when iter > BURN_UP_STEP, start teacher model learning, else, supervised train students model only.
+  EMA_KEEP_RATE: 0.9996
+  UNSUP_LOSS_WEIGHT: 1.0
+  SUP_LOSS_WEIGHT: 1.0
+  DIS_TYPE: "p2" #["concate","p2","multi"] ## choose which layer to grad_reverse
+TEST:
+  EVAL_PERIOD: 1000
+  EVAL_STU: True #Lvxg
+  DRAW: True
+INPUT:
+  FORMAT: "RGB"

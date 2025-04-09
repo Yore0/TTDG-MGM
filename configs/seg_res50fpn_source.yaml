@@ -1,0 +1,45 @@
+_BASE_: "./Base-RCNN-FPN.yaml"
+OUTPUT_DIR: "output/debug"
+DATASETS:
+  TRAIN: ("BKAI_train", "CVC_ClinicDB_train", "ETIS_LaribPolypDB_train") 
+  # "RIM_ONE_r3_train", "REFUGE_train", "ORIGA_train", "REFUGE_Valid", "Drishti_GS_train"
+  # BKAI_train  CVC_ClinicDB_train  ETIS_LaribPolypDB_train  Kvasir_SEG_train
+  TEST: ("BKAI_test", "CVC_ClinicDB_test", "ETIS_LaribPolypDB_test")
+MODEL:
+  WEIGHTS: "detectron2://ImageNetPretrained/MSRA/R-50.pkl"
+  META_ARCHITECTURE: "DAobjTwoStagePseudoLabGeneralizedRCNN"
+  MASK_ON: True
+  RESNETS:
+    DEPTH: 50
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+  FPN:
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+  PROPOSAL_GENERATOR:
+    NAME: "PseudoLabRPN"
+  ROI_HEADS:
+    NAME: "StandardROIHeadsPseudoLab"
+    NUM_CLASSES: 1 
+    IN_FEATURES: ["p2", "p3", "p4", "p5"]
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_FC: 2
+    POOLER_RESOLUTION: 7
+SOLVER:
+  AMP:
+    ENABLED: True
+  MAX_ITER: 10000
+  IMS_PER_BATCH: 8
+  BASE_LR: 0.0025 
+  CHECKPOINT_PERIOD: 1000
+SEMISUPNET:
+  Trainer: baseline 
+  BBOX_THRESHOLD: 0.8
+  TEACHER_UPDATE_ITER: 1
+  EMA_KEEP_RATE: 0.9996
+  UNSUP_LOSS_WEIGHT: 1.0
+  SUP_LOSS_WEIGHT: 1.0
+  DIS_TYPE: "p2"
+TEST:
+  EVAL_PERIOD: 1000
+INPUT:
+  FORMAT: "RGB"

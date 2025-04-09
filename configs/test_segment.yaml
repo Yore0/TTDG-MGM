@@ -1,0 +1,36 @@
+_BASE_: "./Base-RCNN-FPN.yaml"
+OUTPUT_DIR: "output/test"  
+DATASETS:
+  TEST: ("REFUGE_train", "REFUGE_test", "ORIGA_train", "ORIGA_test", "REFUGE_Valid", "Drishti_GS_train", "Drishti_GS_test") ###
+# "RIM_ONE_r3_train", "RIM_ONE_r3_test", "REFUGE_train", "REFUGE_test", "ORIGA_train", "ORIGA_test", "REFUGE_Valid", "Drishti_GS_train", "Drishti_GS_test"
+#  BKAI_test  CVC_ClinicDB_test  ETIS_LaribPolypDB_test  Kvasir_SEG_test
+MODEL:
+  WEIGHTS: output/Fundus/RIM_ONE_sin/model_0009999.pth 
+  META_ARCHITECTURE: "DAobjTwoStagePseudoLabGeneralizedRCNN"
+  MASK_ON: True
+  RESNETS:
+    DEPTH: 50
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+  FPN:
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+  PROPOSAL_GENERATOR:
+    NAME: "PseudoLabRPN"
+  ROI_HEADS:
+    NAME: "StandardROIHeadsPseudoLab"
+    NUM_CLASSES: 2 
+    IN_FEATURES: ["p2", "p3", "p4", "p5"]
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_FC: 2
+    POOLER_RESOLUTION: 7
+SOLVER:
+  MAX_ITER: 30000
+  BASE_LR: 0.005
+SEMISUPNET:
+  Trainer: baseline
+  BBOX_THRESHOLD: 0.8
+  DIS_TYPE: "p2"
+TEST:
+  BATCH: 4
+INPUT:
+  FORMAT: "RGB"
