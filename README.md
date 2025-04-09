@@ -41,9 +41,9 @@ Follow the [INSTALL.md](https://github.com/facebookresearch/detectron2/blob/mast
 ## Quick Start
 
 ### Data Preparation
-The preprocessed data can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1axgu3-65un-wA_1OH-tQIUIEHEDrnS_-).
+1. The preprocessed data can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1axgu3-65un-wA_1OH-tQIUIEHEDrnS_-).
 
-Organize the dataset as the COCO annotation format.
+2. Organize the annotations/masks as the COCO annotation format.
 ```json
 {
     "images": [
@@ -65,6 +65,28 @@ Organize the dataset as the COCO annotation format.
     ]
 }
 ```
+
+3. Organize dataset structure:
+```txt
+datasets/
+└── Fundus/
+    ├── Drishti_GS/                
+    │   ├── test/
+    │   │   └── image/                        
+    │   └── train/
+    │       └── image/                      
+    ├── ORIGA/
+    ├── RIM_ONE_r3/                             
+    ├── REFUGE/                                       
+    ├── REFUGE_Valid/
+    │   └── image/                                                    
+    ├── Drishti_GS_test.json      
+    ├── Drishti_GS_train.json
+    ├── ORIGA_test.json
+    ├── ORIGA_train.json
+    └── ...
+```
+   
 
 ### Test-time Adaptation with Pretrained Models
 ```shell
