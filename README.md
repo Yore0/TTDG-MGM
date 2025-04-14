@@ -2,7 +2,7 @@
 [Test-Time Domain Generalization via Universe Learning: A Multi-Graph Matching Approach for Medical Image Segmentation](https://arxiv.org/abs/2503.13012)  
 *Xingguo Lv, Xingbo Dong, Liwen Wang, Jiewen Yang, Lei Zhao, Bin Pu, Zhe Jin, Xuejun Li*
 
-**Official PyTorch implementation of the CVPR 2025 paper** 
+**Official PyTorch implementation of the CVPR 2025 paper** (score: **44444**)
 
 [![CVPR 2025](https://img.shields.io/badge/CVPR-2025-8A2BE2)](https://cvpr.thecvf.com/)
 [![arXiv](https://img.shields.io/badge/arXiv-2503.13012-orange)](https://arxiv.org/abs/2503.13012)
