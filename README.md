@@ -107,10 +107,11 @@ python train_net.py \
 
 If you use this work in your research or wish to refer to the results published in the paper, please use the following BibTeX entry.
 ```BibTeX
-@article{lv2025test,
+@inproceedings{lv2025test,
   title={Test-Time Domain Generalization via Universe Learning: A Multi-Graph Matching Approach for Medical Image Segmentation},
   author={Lv, Xingguo and Dong, Xingbo and Wang, Liwen and Yang, Jiewen and Zhao, Lei and Pu, Bin and Jin, Zhe and Li, Xuejun},
-  journal={arXiv preprint arXiv:2503.13012},
+  booktitle={Proceedings of the Computer Vision and Pattern Recognition Conference},
+  pages={15621--15631},
   year={2025}
 }
 ```
